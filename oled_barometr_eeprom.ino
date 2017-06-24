@@ -1,3 +1,6 @@
+#include <DHT.h>
+#include <DHT_U.h>
+
 #include <OLED_I2C.h>
 #include <Wire.h>
 #include <SPI.h>
@@ -5,8 +8,13 @@
 #include <Adafruit_BMP280.h>
 #include <EEPROM.h>
 
+#define DHTPIN 3         //define as DHTPIN the Pin 3 used to connect the Sensor
+#define DHTTYPE DHT11    //define the sensor used(DHT11)
+
 
 OLED  myOLED(SDA, SCL, 8);
+
+DHT dht(DHTPIN, DHTTYPE);//create an instance of DHT
 
 //константы
 #define BMP_SCK 13
@@ -40,8 +48,12 @@ void loop()
   myOLED.clrScr();
   char pressure[6] = "";
   char temperature[6] = "";
+  String hyd = String((int) dht.readHumidity());
   dtostrf(bme.readPressure()*0.00750062,5,2,pressure);
   dtostrf(bme.readTemperature(),4,1,temperature);
+  //dtoint(dht.readHumidity(),4,hyd);
+  myOLED.print(hyd, CENTER, 0);
+  myOLED.print("%", 70, 0);
   myOLED.print(pressure, LEFT, 0);
   //String count = String((int) ((bme.readPressure()*0.00750062-727)*2 + 0.51) );
   //myOLED.print(count, 10, 8);
